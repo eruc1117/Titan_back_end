@@ -1,0 +1,23 @@
+{
+  "name": "back_end",
+  "version": "1.0.0",
+  "main": "importCSV.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "csv-parser": "^3.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/eruc1117/Titan_back_end.git"
+  },
+  "bugs": {
+    "url": "https://github.com/eruc1117/Titan_back_end/issues"
+  },
+  "homepage": "https://github.com/eruc1117/Titan_back_end#readme",
+  "description": ""
+}
