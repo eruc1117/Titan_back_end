@@ -1,15 +1,16 @@
 const pool = require("../connect")
 
-initDepartment()
+initHoliday()
 
-async function initDepartment () {
+async function initHoliday () {
     try {
         const promisePool = pool.promise()
-        let tableSql ="CREATE TABLE IF NOT EXISTS department ("
+        let tableSql = "CREATE TABLE IF NOT EXISTS holiday ("
         tableSql += "id int NOT NULL AUTO_INCREMENT PRIMARY KEY,"
-        tableSql += "startTime DATETIME NOT NULL,"
-        tableSql += "endTime DATETIME NOT NULL,"
-        tableSql += "rangeTime int)"
+        tableSql += "depId int NOT NULL,"
+        tableSql += "holiday DATETIME NOT NULL,"
+        tableSql += "FOREIGN KEY (depId)"
+        tableSql += "REFERENCES department(id))"
         const [rows,fields] = await promisePool.query(tableSql)
     } catch (err) {
         console.log(err)
@@ -17,4 +18,4 @@ async function initDepartment () {
         pool.end()
     }
 
-}
+} 
