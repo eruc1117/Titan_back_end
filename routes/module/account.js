@@ -1,8 +1,7 @@
 const express = require("express")
 const router = express.Router()
+const accountController = require("../../controller/account")
 
-router.get("/login", function(req, res) {
-    res.send("login API")
-})
+router.post("/login", accountController.login)
 
 module.exports = router
