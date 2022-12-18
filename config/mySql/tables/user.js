@@ -13,6 +13,7 @@ async function initUser () {
         tableSql += "account VARCHAR(50) NOT NULL,"
         tableSql += "password VARCHAR(255) NOT NULL,"
         tableSql += "errCount int,"
+        tableSql += "isAdmin BOOLEAN,"
         tableSql += "FOREIGN KEY (depId)"
         tableSql += "REFERENCES department(id))"
         const [rows,fields] = await promisePool.query(tableSql)
