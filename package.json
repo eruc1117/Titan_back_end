@@ -25,5 +25,10 @@
     "url": "https://github.com/eruc1117/Titan_back_end/issues"
   },
   "homepage": "https://github.com/eruc1117/Titan_back_end#readme",
-  "description": ""
+  "description": "",
+  "devDependencies": {
+    "eslint": "^8.30.0",
+    "prettier": "^2.8.1",
+    "prettier-eslint": "^15.0.1"
+  }
 }
