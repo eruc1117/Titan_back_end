@@ -1,11 +1,11 @@
 const pool = require("../connect")
 
-initWorkTime()
+initLocation()
 
-async function initWorkTime () {
+async function initLocation () {
     try {
         const promisePool = pool.promise()
-        let tableSql = "INSERT INTO Titan.workTime (startTime, endTime) VALUES ('10:00:00', '18:30:00')"
+        let tableSql = "INSERT INTO Titan.location (depId, latitude, longitude) VALUES (1, 24.810108242470402, 120.97515335571487)"
         const [rows,fields] = await promisePool.query(tableSql)
     } catch (err) {
         console.log(err)
@@ -13,4 +13,4 @@ async function initWorkTime () {
         pool.end()
     }
 
-} 
+}
