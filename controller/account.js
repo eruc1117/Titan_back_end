@@ -43,7 +43,10 @@ const accountController = {
             console.log(err)
             res.status(400).json({err: "err"})
         }
-    }
+    },
+    preResetPassword: async (req, res) => {
+        const account = req.body.account
+    } 
 }
 
 module.exports = accountController
