@@ -1,15 +1,18 @@
-const CheckIn = require("./checkIn")
+const CheckIn = require("./checkIn");
 
 class User extends CheckIn {
-    constructor (userId) {
-        this.id = userId
-    }
+  constructor(userId) {
+    super(1);
+    this.id = userId;
+  }
 
-    async userGpsPunch () {
-        return  super.gpsPunch(this.id)
-    }
+  async userGpsPunch(location) {
+    return this.gpsPunch(this.id, location);
+  }
 
-    async userQrCodePunch () {
-        return  super.qrCodePunch(this.id)
-    }
+  async userQrCodePunch() {
+    return this.qrCodePunch(this.id);
+  }
 }
+
+module.exports = User;
