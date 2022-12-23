@@ -1,10 +1,10 @@
-const express = require("express")
-const router = express.Router()
-const accountController = require("../../controller/account")
-const authentication = require("../../middleware/authentication")
+const express = require("express");
+const router = express.Router();
+const accountController = require("../../controller/account");
+const authentication = require("../../middleware/authentication");
 
-router.post("/login", accountController.login)
-router.use(authentication)
+router.post("/login", accountController.login);
+router.post("/preReset", accountController.preResetPassword);
+router.use(authentication);
 
-
-module.exports = router
+module.exports = router;

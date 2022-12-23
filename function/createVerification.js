@@ -1,8 +1,8 @@
 const pool = require("../config/mySql/connect");
 
-const createVerification = async (maxNum) => {
+const createVerification = async () => {
   try {
-    const randomNum = Math.floor(Math.random() * maxNum);
+    const randomNum = Math.floor(Math.random() * 999);
     const promisePool = pool.promise();
     let insertSql = `INSERT INTO verification (verification) VALUES (${randomNum}); `;
     let sqlCmd = "SELECT LAST_INSERT_ID() AS id";
