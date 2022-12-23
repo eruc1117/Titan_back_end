@@ -4,6 +4,7 @@ const jwt = require("jsonwebtoken");
 const path = require("path");
 const envPath = path.join(__dirname, "../.env");
 const nodemailer = require("nodemailer");
+const User = require("../class/user");
 const createVerification = require("../function/createVerification");
 require("dotenv").config({ path: envPath });
 
@@ -51,7 +52,9 @@ const accountController = {
   },
   preResetPassword: async (req, res) => {
     try {
-      const userEmail = req.body.email;
+      const userId = req.body.id;
+      const employee = new User(userId);
+      const employeeEmail = await employee.getEmail();
       const [verId, verification] = await createVerification();
       const transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
@@ -65,12 +68,9 @@ const accountController = {
       transporter
         .sendMail({
           from: "eruc11111@gmail.com",
-          to: userEmail,
+          to: employeeEmail,
           subject: "密碼重置驗證碼",
           html: `${verId},${verification}`,
-        })
-        .then((info) => {
-          console.log({ info });
         })
         .catch(console.error);
       res.status(200).send("Sucess");
