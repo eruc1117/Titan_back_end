@@ -13,12 +13,15 @@ const accountController = {
     try {
       const promisePool = pool.promise();
       const [account, password] = [req.body.account, req.body.password];
-      const sqlCmd = `SELECT id, password FROM user WHERE account = '${account}'`;
+      const sqlCmd = `SELECT id, password, errCount FROM user WHERE account = '${account}'`;
       const preSqlResult = (await promisePool.query(sqlCmd))[0];
       if (0 === preSqlResult.length) {
         throw new Error("無此帳號！");
       }
       const dbPassword = preSqlResult[0]["password"];
+      if (preSqlResult[0]["errCount"] > 4) {
+        throw new Error("密碼輸入錯誤超過五次");
+      }
       const chkResult = await bcrypt.compare(password, dbPassword);
       let resMsg = {
         status: chkResult ? 200 : 400,
@@ -38,6 +41,10 @@ const accountController = {
           admin: false,
         };
       } else {
+        const updateErrCount = `UPDATE user SET errCount = ${
+          preSqlResult[0]["errCount"] + 1
+        } WHERE account = '${account}'`;
+        await promisePool.query(updateErrCount);
         resMsg.message = {
           login: "false",
           workState: "logout",
