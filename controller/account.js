@@ -13,7 +13,7 @@ const accountController = {
     try {
       const promisePool = pool.promise();
       const [account, password] = [req.body.account, req.body.password];
-      const sqlCmd = `SELECT id, password, errCount FROM user WHERE account = '${account}'`;
+      const sqlCmd = `SELECT id, password, errCount , isAdmin FROM user WHERE account = '${account}'`;
       const preSqlResult = (await promisePool.query(sqlCmd))[0];
       if (0 === preSqlResult.length) {
         throw new Error("無此帳號！");
@@ -29,7 +29,7 @@ const accountController = {
       };
       if (chkResult) {
         const token = jwt.sign(
-          { id: preSqlResult[0]["id"] },
+          { id: preSqlResult[0]["id"], isAdmin: preSqlResult[0]["isAdmin"] },
           process.env.secret,
           { expiresIn: "1d" }
         );

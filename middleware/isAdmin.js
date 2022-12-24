@@ -5,15 +5,13 @@ require("dotenv").config({ path: envPath });
 
 const authentication = async (req, res, next) => {
   try {
-    const authToken = req.headers["authorization"].replace("Bearer ", "");
-    const decoded = await jwt.verify(authToken, process.env.secret);
-    req.middlewarePassData = {
-      userId: decoded.id,
-      isAdmin: decoded.isAdmin,
-    };
+    const isAdmin = req.middlewarePassData.isAdmin;
+    if (isAdmin === 0) {
+      throw new Error("不是管理者");
+    }
     next();
   } catch (err) {
-    res.send("Token is wrong !!");
+    res.send(" 不是管理者 !!");
   }
 };
 
