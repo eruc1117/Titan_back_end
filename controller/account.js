@@ -78,6 +78,37 @@ const accountController = {
       console.log(err);
     }
   },
+  resetPassword: async (req, res) => {
+    try {
+      const { userId, newPassword, rePeatPassword, captcha } = req.body;
+      const verificationId = captcha.split(",")[0];
+      const verification = captcha.split(",")[1];
+      const employee = new User(userId);
+      if (newPassword !== rePeatPassword) {
+        res.send("not equals");
+      }
+      const resetResult = await employee.updatePassword(
+        verificationId,
+        verification,
+        userId,
+        newPassword
+      );
+      let msg = {
+        status: false,
+        msg: "",
+      };
+      if (resetResult.status) {
+        msg.status = resetResult.status;
+        msg.msg = "sucess";
+      } else {
+        msg.status = resetResult.status;
+        msg.msg = "fail";
+      }
+      res.json({ status: "200", msg });
+    } catch (err) {
+      console.log(err);
+    }
+  },
 };
 
 module.exports = accountController;
