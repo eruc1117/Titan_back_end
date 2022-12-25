@@ -9,5 +9,6 @@ router.use(isAdmin);
 router.post("/absent", adminController.getAbsentUser);
 router.get("/block", adminController.getBlockUser);
 router.post("/cancel/block", adminController.cancelBlockUser);
+router.post("/cancel/absent", adminController.cancelAbsentUser);
 
 module.exports = router;

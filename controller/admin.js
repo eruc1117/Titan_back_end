@@ -132,6 +132,37 @@ const adminController = {
       console.log(err);
     }
   },
+  cancelAbsentUser: async (req, res) => {
+    try {
+      const { userId, isLate, workTime } = req.body;
+      const promisePool = pool.promise();
+      let cancelSql = ``;
+      if (isLate) {
+        cancelSql = `UPDATE Titan.checkTime SET `;
+        cancelSql += `start = CONCAT('${workTime} ', (SELECT startTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId}))),`;
+        cancelSql += `end = CONCAT('${workTime} ', (SELECT endTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId})))`;
+        cancelSql += `WHERE userId = ${userId} AND start Like '${workTime}%'`;
+      } else {
+        cancelSql = `INSERT INTO Titan.checkTime (userId, start, end) VALUES (`;
+        cancelSql += `${userId}, CONCAT('${workTime} ', (SELECT startTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId}))),`;
+        cancelSql += `CONCAT('${workTime} ', (SELECT endTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId}))))`;
+      }
+      const result = (await promisePool.query(cancelSql))[0];
+      if (result.affectedRows === 1) {
+        res.json({
+          status: "200",
+          message: "sucess",
+        });
+      } else {
+        res.json({
+          status: "200",
+          message: "fail",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
 };
 
 module.exports = adminController;
