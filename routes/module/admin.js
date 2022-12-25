@@ -6,6 +6,7 @@ const isAdmin = require("../../middleware/isAdmin");
 
 router.use(authentication);
 router.use(isAdmin);
-router.post("/test", adminController.getAbsentUser);
+router.post("/absent", adminController.getAbsentUser);
+router.get("/block", adminController.getBlockUser);
 
 module.exports = router;

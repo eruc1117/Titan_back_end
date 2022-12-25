@@ -97,6 +97,20 @@ const adminController = {
       console.log(err);
     }
   },
+  getBlockUser: async (req, res) => {
+    try {
+      const promisePool = pool.promise();
+      const blockSql = `SELECT id, name FROM Titan.user WHERE errCount > 4 AND isAdmin IS FALSE `;
+      const blockResult = (await promisePool.query(blockSql))[0];
+      const usersInfo = [...blockResult];
+      res.json({
+        status: "sucess",
+        message: usersInfo,
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  },
 };
 
 module.exports = adminController;
