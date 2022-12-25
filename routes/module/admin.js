@@ -8,5 +8,6 @@ router.use(authentication);
 router.use(isAdmin);
 router.post("/absent", adminController.getAbsentUser);
 router.get("/block", adminController.getBlockUser);
+router.post("/cancel/block", adminController.cancelBlockUser);
 
 module.exports = router;

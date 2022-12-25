@@ -111,6 +111,27 @@ const adminController = {
       console.log(err);
     }
   },
+  cancelBlockUser: async (req, res) => {
+    try {
+      const userId = req.body.userId;
+      const promisePool = pool.promise();
+      const cancelSql = `UPDATE Titan.user SET errCount = 0 WHERE id = ${userId} AND isAdmin IS FALSE `;
+      const result = (await promisePool.query(cancelSql))[0];
+      if (result.affectedRows === 1) {
+        res.json({
+          status: "200",
+          message: "sucess",
+        });
+      } else {
+        res.json({
+          status: "200",
+          message: "fail",
+        });
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  },
 };
 
 module.exports = adminController;
