@@ -19,8 +19,10 @@ class User extends CheckIn {
     return this.gpsPunch(this.id, location);
   }
 
-  async userQrCodePunch() {
-    return this.qrCodePunch(this.id);
+  async userQrCodePunch(nowDateStart, nowDateEnd) {
+    nowDateStart += " 05:00:00";
+    nowDateEnd += " 04:59:59";
+    return this.qrCodePunch(this.id, nowDateStart, nowDateEnd);
   }
 
   async updatePassword(verificationId, verification, userId, newPassword) {

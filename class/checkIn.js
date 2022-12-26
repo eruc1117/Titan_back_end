@@ -101,14 +101,19 @@ class CheckIn {
     }
   }
 
-  async qrCodePunch(userId, time) {
-    // time 寫入 db
-    // return {
-    //     test : true
-    // } ||
-    // {
-    //    test : false
-    // }
+  async qrCodePunch(userId, nowDateStart, nowDateEnd) {
+    try {
+      const promisePool = pool.promise();
+      let sqlCmd = `call insertCheckTime(?, ? ,?)`;
+      const result = await promisePool.query(sqlCmd, [
+        userId,
+        nowDateStart,
+        nowDateEnd,
+      ]);
+      return result;
+    } catch (err) {
+      console.log(err);
+    }
   }
 }
 
