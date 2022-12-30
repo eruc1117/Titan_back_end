@@ -4,7 +4,7 @@ const bcrypt = require("bcrypt");
 
 class User extends CheckIn {
   constructor(userId) {
-    super(1);
+    super();
     this.id = userId;
   }
 
@@ -15,8 +15,36 @@ class User extends CheckIn {
     return result[0][0]["email"];
   }
 
+  async getDepId() {
+    try {
+      const promisePool = pool.promise();
+      const sqlCmd = `SELECT depId FROM user WHERE id = ${this.id}`;
+      const result = await promisePool.query(sqlCmd);
+      return result[0][0]["depId"];
+    } catch (err) {
+      console.log(err);
+    }
+  }
+
+  async getDepLocation() {
+    try {
+      const location = await this.getLocationInfo.call({
+        id: await this.getDepId(),
+      });
+      return location;
+    } catch (err) {}
+  }
+
   async userGpsPunch(location) {
-    return this.gpsPunch(this.id, location);
+    try {
+      return this.gpsPunch.call(
+        { location: await this.getDepLocation() },
+        this.id,
+        location
+      );
+    } catch (err) {
+      console.log(err);
+    }
   }
 
   async userQrCodePunch(nowDateStart, nowDateEnd) {

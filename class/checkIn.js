@@ -4,7 +4,6 @@ const haversine = require("haversine-distance");
 class CheckIn {
   constructor(depId) {
     this.id = depId;
-    this.location = this.getLocationInfo();
   }
 
   async getLocationInfo() {
@@ -24,7 +23,7 @@ class CheckIn {
 
   async gpsPunch(userId, location) {
     try {
-      const distance = haversine(await this.location, location);
+      const distance = haversine(await this.location, location); //暫時先以 call 或是 apply 附帶 location
       if (400 < distance) {
         return {
           state: false,
@@ -33,16 +32,12 @@ class CheckIn {
       }
 
       const date = new Date();
-      const [month, day, year, hour, minutes, seconds] = [
+      const [month, day, year, hour] = [
         date.getMonth() + 1,
         date.getDate(),
         date.getFullYear(),
         date.getHours(),
-        date.getMinutes(),
-        date.getSeconds(),
       ];
-
-      const nowTime = `${year}-${month}-${day} ${hour}:${minutes}:${seconds}`;
 
       function leapYear(year) {
         if (0 !== year % 4) {
@@ -55,9 +50,7 @@ class CheckIn {
           return true;
         }
       }
-      let nowDateStart = `${year}-${month}-${day} 05:00:00`;
-
-      let nextDay = day + 1;
+      let nextDay = hour > 0 && hour < 5 ? day - 1 : day + 1;
       let nextMonth = month;
       let nextYear = year;
 
@@ -78,16 +71,34 @@ class CheckIn {
 
       let monthStr = nextMonth.toString();
 
-      if (nextDay > monthRule[monthStr]) {
+      if (nextDay > monthRule[monthStr] && hour > 5) {
         nextDay = 1;
         nextMonth += 1;
+      } else if (nextDay === 0 && hour < 5) {
+        nextMonth -= 1;
+        if (nextMonth === 0) {
+          nextMonth = 12;
+          nextYear -= 1;
+          monthStr = nextMonth.toString();
+        }
+        nextDay = monthRule[monthStr];
       }
 
       if (nextMonth > 12) {
         nextMonth = 1;
         nextYear += 1;
       }
-      let nowDateEnd = `${nextYear}-${nextMonth}-${nextDay} 04:59:59`;
+      let nowDateStart = "";
+      let nowDateEnd = "";
+
+      if (hour > 0 && hour < 5) {
+        nowDateStart = `${nextYear}-${nextMonth}-${nextDay} 05:00:00`;
+        nowDateEnd = `${year}-${month}-${day} 04:59:59`;
+      } else {
+        nowDateStart = `${year}-${month}-${day} 05:00:00`;
+        nowDateEnd = `${nextYear}-${nextMonth}-${nextDay} 04:59:59`;
+      }
+
       const promisePool = pool.promise();
       let sqlCmd = `call insertCheckTime(?, ? ,?)`;
       const result = await promisePool.query(sqlCmd, [

@@ -38,7 +38,7 @@ const accountController = {
           login: "true",
           workState: "start",
           token: token,
-          admin: false,
+          admin: preSqlResult[0]["isAdmin"],
         };
       } else {
         const updateErrCount = `UPDATE user SET errCount = ${

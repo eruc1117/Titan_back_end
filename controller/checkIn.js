@@ -1,6 +1,9 @@
 const moment = require("moment-timezone");
 const User = require("../class/user");
+const CheckIn = require("../class/checkIn");
 const bcrypt = require("bcrypt");
+const haversine = require("haversine-distance");
+const pool = require("../config/mySql/connect");
 
 const checkInController = {
   checkIn: async (req, res) => {
@@ -23,6 +26,15 @@ const checkInController = {
   preQrcode: async (req, res) => {
     try {
       const userId = req.params.userId;
+      const location = req.body.location;
+
+      const distance = haversine(await this.location, location);
+      if (400 < distance) {
+        return {
+          state: false,
+          message: "超過距離，無法打卡",
+        };
+      }
       const date = new Date();
       const [month, day, year] = [
         date.getMonth() + 1,
