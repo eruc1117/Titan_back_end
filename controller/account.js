@@ -9,7 +9,7 @@ const createVerification = require("../function/createVerification");
 require("dotenv").config({ path: envPath });
 
 const accountController = {
-  login: async (req, res) => {
+  login: async (req, res, next) => {
     try {
       const promisePool = pool.promise();
       const [account, password] = [req.body.account, req.body.password];
@@ -59,8 +59,7 @@ const accountController = {
       }
       res.status(resMsg.status).json(resMsg);
     } catch (err) {
-      console.log(err);
-      res.status(400).json({ err: "err" });
+      next(err);
     }
   },
   preResetPassword: async (req, res) => {
