@@ -5,6 +5,6 @@ const authentication = require("../../middleware/authentication");
 
 router.get("/qrCode/:urlVerCode/:userId", checlInController.qrCodeCheckIn);
 router.post("/check", authentication, checlInController.checkIn);
-router.post("/preQrCode/:userId", authentication, checlInController.preQrcode);
+router.post("/preQrCode", authentication, checlInController.preQrcode);
 
 module.exports = router;

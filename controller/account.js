@@ -43,6 +43,7 @@ const accountController = {
         resMsg.message = {
           login: "true",
           workState: "start",
+          userId: preSqlResult[0]["id"],
           token: token,
           admin: preSqlResult[0]["isAdmin"],
         };

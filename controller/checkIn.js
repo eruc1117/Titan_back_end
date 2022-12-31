@@ -6,9 +6,9 @@ const workTimeRange = require("../function/workTimeRange");
 
 const checkInController = {
   checkIn: async (req, res) => {
-    const id = req.body.userId;
+    const userId = req.middlewarePassData.userId;
     const location = req.body.location;
-    const empoloyee = new User(id);
+    const empoloyee = new User(userId);
     const preCheckLog = await empoloyee.userGpsPunch(location);
     const checkLog = preCheckLog[0][0][0];
     let returnInfo = {
@@ -24,7 +24,7 @@ const checkInController = {
   },
   preQrcode: async (req, res) => {
     try {
-      const userId = req.params.userId;
+      const userId = req.middlewarePassData.userId;
       const location = req.body.location;
       const employee = new User(userId);
       const distance = haversine(await employee.getDepLocation(), location);
