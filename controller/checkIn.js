@@ -60,56 +60,8 @@ const checkInController = {
     try {
       const urlVerCode = req.params.urlVerCode;
       const userId = Number(req.params.userId);
-      const date = new Date();
-      const [month, day, year] = [
-        date.getMonth() + 1,
-        date.getDate(),
-        date.getFullYear(),
-      ];
-      function leapYear(year) {
-        if (0 !== year % 4) {
-          return false;
-        } else if (0 === year % 4 && 0 !== year % 100) {
-          return true;
-        } else if (0 === year % 100 && 0 !== year % 400) {
-          return false;
-        } else if (0 === year % 400) {
-          return true;
-        }
-      }
-      let nowDateStart = `${year}-${month}-${day}`;
 
-      let nextDay = day + 1;
-      let nextMonth = month;
-      let nextYear = year;
-
-      const monthRule = {
-        1: 31,
-        3: 31,
-        5: 31,
-        7: 31,
-        8: 31,
-        10: 31,
-        12: 31,
-        2: leapYear(year) ? 29 : 28,
-        4: 30,
-        6: 30,
-        9: 30,
-        11: 30,
-      };
-
-      let monthStr = nextMonth.toString();
-
-      if (nextDay > monthRule[monthStr]) {
-        nextDay = 1;
-        nextMonth += 1;
-      }
-
-      if (nextMonth > 12) {
-        nextMonth = 1;
-        nextYear += 1;
-      }
-      let nowDateEnd = `${nextYear}-${nextMonth}-${nextDay}`;
+      const { nowDateStart, nowDateEnd } = workTimeRange();
 
       const compareResult = await bcrypt.compareSync(
         `${userId},${nowDateStart},${nowDateEnd}`,

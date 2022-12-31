@@ -13,6 +13,12 @@ const accountController = {
     try {
       const promisePool = pool.promise();
       const [account, password] = [req.body.account, req.body.password];
+      if ("" === account) {
+        throw new Error("帳號未輸入！");
+      }
+      if ("" === password) {
+        throw new Error("密碼未輸入！");
+      }
       const sqlCmd = `SELECT id, password, errCount , isAdmin FROM user WHERE account = '${account}'`;
       const preSqlResult = (await promisePool.query(sqlCmd))[0];
       if (0 === preSqlResult.length) {
