@@ -1,9 +1,8 @@
 const moment = require("moment-timezone");
 const User = require("../class/user");
-const CheckIn = require("../class/checkIn");
 const bcrypt = require("bcrypt");
 const haversine = require("haversine-distance");
-const pool = require("../config/mySql/connect");
+const workTimeRange = require("../function/workTimeRange");
 
 const checkInController = {
   checkIn: async (req, res) => {
@@ -27,73 +26,26 @@ const checkInController = {
     try {
       const userId = req.params.userId;
       const location = req.body.location;
-
-      const distance = haversine(await this.location, location);
+      const employee = new User(userId);
+      const distance = haversine(await employee.getDepLocation(), location);
       if (400 < distance) {
-        return {
+        res.json({
           state: false,
           message: "超過距離，無法打卡",
-        };
-      }
-      const date = new Date();
-      const [month, day, year] = [
-        date.getMonth() + 1,
-        date.getDate(),
-        date.getFullYear(),
-      ];
-
-      const nowTime = `${year}-${month}-${day}`;
-
-      function leapYear(year) {
-        if (0 !== year % 4) {
-          return false;
-        } else if (0 === year % 4 && 0 !== year % 100) {
-          return true;
-        } else if (0 === year % 100 && 0 !== year % 400) {
-          return false;
-        } else if (0 === year % 400) {
-          return true;
-        }
-      }
-      let nowDateStart = `${year}-${month}-${day}`;
-
-      let nextDay = day + 1;
-      let nextMonth = month;
-      let nextYear = year;
-
-      const monthRule = {
-        1: 31,
-        3: 31,
-        5: 31,
-        7: 31,
-        8: 31,
-        10: 31,
-        12: 31,
-        2: leapYear(year) ? 29 : 28,
-        4: 30,
-        6: 30,
-        9: 30,
-        11: 30,
-      };
-
-      let monthStr = nextMonth.toString();
-
-      if (nextDay > monthRule[monthStr]) {
-        nextDay = 1;
-        nextMonth += 1;
+        });
       }
 
-      if (nextMonth > 12) {
-        nextMonth = 1;
-        nextYear += 1;
-      }
-      let nowDateEnd = `${nextYear}-${nextMonth}-${nextDay}`;
+      const { nowDateStart, nowDateEnd } = workTimeRange();
+
       const saltRounds = 10;
-      const salt = await bcrypt.genSaltSync(saltRounds);
-      const verCode = await bcrypt.hashSync(
-        `${userId},${nowDateStart},${nowDateEnd}`,
-        salt
-      );
+      let verCode = "";
+      do {
+        let salt = await bcrypt.genSaltSync(saltRounds);
+        verCode = await bcrypt.hashSync(
+          `${userId},${nowDateStart},${nowDateEnd}`,
+          salt
+        );
+      } while (verCode.indexOf("/") !== -1 ?? verCode.indexOf("?") !== -1);
       res.json({
         status: "200",
         message: {
