@@ -86,19 +86,19 @@ const accountController = {
           html: `${verId},${verification}`,
         })
         .catch(console.error);
-      res.status(200).send("Sucess");
+      res.status(200).json({ message: "sucess" });
     } catch (err) {
       console.log(err);
     }
   },
   resetPassword: async (req, res) => {
     try {
-      const { userId, newPassword, rePeatPassword, captcha } = req.body;
+      const { userId, newPassword, repeatPassword, captcha } = req.body;
       const verificationId = captcha.split(",")[0];
       const verification = captcha.split(",")[1];
       const employee = new User(userId);
-      if (newPassword !== rePeatPassword) {
-        res.send("not equals");
+      if (newPassword !== repeatPassword) {
+        res.status(400).json({ status: 400, message: "fail" });
       }
       const resetResult = await employee.updatePassword(
         verificationId,
@@ -111,13 +111,13 @@ const accountController = {
         msg: "",
       };
       if (resetResult.status) {
-        msg.status = resetResult.status;
+        msg.status = 200;
         msg.msg = "sucess";
       } else {
-        msg.status = resetResult.status;
+        msg.status = 500;
         msg.msg = "fail";
       }
-      res.json({ status: "200", msg });
+      res.status(msg.status).json({ status: msg.status, message: msg.msg });
     } catch (err) {
       console.log(err);
     }
