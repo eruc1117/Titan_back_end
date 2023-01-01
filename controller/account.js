@@ -122,6 +122,9 @@ const accountController = {
       console.log(err);
     }
   },
+  frontEndRouter: (req, res) => {
+    res.status(200).json({ status: 200, message: "success" });
+  },
 };
 
 module.exports = accountController;

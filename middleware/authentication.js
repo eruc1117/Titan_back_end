@@ -14,7 +14,7 @@ const authentication = async (req, res, next) => {
     next();
   } catch (err) {
     console.log(err);
-    res.send("Token is wrong !!");
+    res.status(400).json({ status: 400, message: "Token is wrong!!" });
   }
 };
 
