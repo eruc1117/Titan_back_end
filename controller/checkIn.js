@@ -9,18 +9,8 @@ const checkInController = {
     const userId = req.middlewarePassData.userId;
     const location = req.body.location;
     const empoloyee = new User(userId);
-    const preCheckLog = await empoloyee.userGpsPunch(location);
-    const checkLog = preCheckLog[0][0][0];
-    let returnInfo = {
-      userId: checkLog["userId"],
-    };
-    returnInfo["startTime"] = moment(checkLog["start"])
-      .utc("Asia/Tokyo")
-      .format("YYYY-MM-DD HH:mm:ss");
-    returnInfo["endTime"] = moment(checkLog["end"])
-      .utc("Asia/Tokyo")
-      .format("YYYY-MM-DD HH:mm:ss");
-    res.status(200).json(returnInfo);
+    const info = await empoloyee.userGpsPunch(location);
+    res.status(200).json(info);
   },
   preQrcode: async (req, res) => {
     try {

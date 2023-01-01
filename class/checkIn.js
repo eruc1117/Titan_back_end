@@ -27,7 +27,7 @@ class CheckIn {
       const distance = haversine(await this.location, location); //暫時先以 call 或是 apply 附帶 location
       if (400 < distance) {
         return {
-          state: false,
+          status: 400,
           message: "超過距離，無法打卡",
         };
       }
@@ -41,7 +41,18 @@ class CheckIn {
         nowDateStart,
         nowDateEnd,
       ]);
-      return result;
+      const checkLog = result[0][0][0];
+      let returnInfo = {
+        status: 200,
+        userId: checkLog["userId"],
+      };
+      returnInfo["startTime"] = moment(checkLog["start"])
+        .utc("Asia/Tokyo")
+        .format("YYYY-MM-DD HH:mm:ss");
+      returnInfo["endTime"] = moment(checkLog["end"])
+        .utc("Asia/Tokyo")
+        .format("YYYY-MM-DD HH:mm:ss");
+      return returnInfo;
     } catch (err) {
       console.log(err);
     }
