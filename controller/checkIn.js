@@ -20,7 +20,7 @@ const checkInController = {
       const distance = haversine(await employee.getDepLocation(), location);
       if (400 < distance) {
         res.json({
-          state: false,
+          status: 400,
           message: "超過距離，無法打卡",
         });
       }
@@ -37,10 +37,8 @@ const checkInController = {
         );
       } while (verCode.indexOf("/") !== -1 ?? verCode.indexOf("?") !== -1);
       res.json({
-        status: "200",
-        message: {
-          urlVerCode: verCode,
-        },
+        status: 200,
+        message: verCode,
       });
     } catch (err) {
       console.log(err);
