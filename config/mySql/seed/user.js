@@ -13,13 +13,13 @@ async function createUserData(number) {
     const oriAdminPassword = "tiadmin";
     const adminPassword = await bcrypt.hash(oriAdminPassword, salt);
     let tableSql =
-      "INSERT INTO user (depId, name, email, account, password, isAdmin, errCount) VALUES ";
+      "INSERT INTO user (id ,depId, name, email, account, password, isAdmin, errCount) VALUES ";
     for (let i = 0; i < number; i++) {
-      tableSql += `(${
-        i + 1
+      tableSql += `(${i === 0 ? 1 : 11},${
+        i === 0 ? 1 : 11
       }, 'user${i}', 'eruc101010@gmail.com', 'user${i}', '${password}', false, 0),`;
     }
-    tableSql += `(1, 'admin', 'eruc101010@gmail.com', 'admin', '${adminPassword}', true,0)`;
+    tableSql += `(21,1, 'admin', 'eruc101010@gmail.com', 'admin', '${adminPassword}', true,0)`;
     const [rows, fields] = await promisePool.query(tableSql);
   } catch (err) {
     console.log(err);

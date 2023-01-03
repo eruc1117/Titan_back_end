@@ -6,7 +6,7 @@ async function initUser() {
   try {
     const promisePool = pool.promise();
     let tableSql = "CREATE TABLE IF NOT EXISTS user (";
-    tableSql += "id int NOT NULL AUTO_INCREMENT PRIMARY KEY,";
+    tableSql += "id int NOT NULL PRIMARY KEY,";
     tableSql += "depId int NOT NULL,";
     tableSql += "name NVARCHAR(50),";
     tableSql += "email VARCHAR(100),";
