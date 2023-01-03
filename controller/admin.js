@@ -49,21 +49,21 @@ const adminController = {
         nextMonth = 1;
         nextYear += 1;
       }
-      let absentSql = `SELECT id, name, depId FROM Titan.user WHERE NOT EXISTS (SELECT userId FROM Titan.checkTime WHERE `;
+      let absentSql = `SELECT id, name, depId FROM user WHERE NOT EXISTS (SELECT userId FROM checkTime WHERE `;
       absentSql += `start > '${workTime} 05:00:00' AND end < '${nextYear}-${nextMonth}-${nextDay} 04:59:59' ) `;
       absentSql += `AND isAdmin IS FALSE `;
-      absentSql += `AND depId NOT IN (SELECT depId FROM Titan.holiday WHERE holiday = '${workTime}')`;
+      absentSql += `AND depId NOT IN (SELECT depId FROM holiday WHERE holiday = '${workTime}')`;
       const absentResult = (await promisePool.query(absentSql))[0];
 
-      const allDepIdSql = "SELECT id FROM Titan.department";
+      const allDepIdSql = "SELECT id FROM department";
       const depResult = await promisePool.query(allDepIdSql);
 
       let allDepId = [...depResult[0]];
       let allLateUserInfo = [];
 
       for (let i = 0; i < allDepId.length; i++) {
-        let lateSql = `select * FROM Titan.user INNER JOIN Titan.checkTime ON Titan.user.id = Titan.checkTime.userId `;
-        lateSql += `WHERE start > (SELECT CONCAT('${workTime} ', startTime) AS startDate FROM Titan.workTime WHERE depId = ${allDepId[i]["id"]}) `;
+        let lateSql = `select * FROM user INNER JOIN checkTime ON user.id = checkTime.userId `;
+        lateSql += `WHERE start > (SELECT CONCAT('${workTime} ', startTime) AS startDate FROM workTime WHERE depId = ${allDepId[i]["id"]}) `;
         lateSql += `AND start LIKE '${workTime}%'`;
 
         let depLateResult = (await promisePool.query(lateSql))[0];
@@ -100,7 +100,7 @@ const adminController = {
   getBlockUser: async (req, res) => {
     try {
       const promisePool = pool.promise();
-      const blockSql = `SELECT id, name FROM Titan.user WHERE errCount > 4 AND isAdmin IS FALSE `;
+      const blockSql = `SELECT id, name FROM user WHERE errCount > 4 AND isAdmin IS FALSE `;
       const blockResult = (await promisePool.query(blockSql))[0];
       const usersInfo = [...blockResult];
       res.json({
@@ -115,7 +115,7 @@ const adminController = {
     try {
       const userId = req.body.userId;
       const promisePool = pool.promise();
-      const cancelSql = `UPDATE Titan.user SET errCount = 0 WHERE id = ${userId} AND isAdmin IS FALSE `;
+      const cancelSql = `UPDATE user SET errCount = 0 WHERE id = ${userId} AND isAdmin IS FALSE `;
       const result = (await promisePool.query(cancelSql))[0];
       if (result.affectedRows === 1) {
         res.json({
@@ -138,14 +138,14 @@ const adminController = {
       const promisePool = pool.promise();
       let cancelSql = ``;
       if (isLate) {
-        cancelSql = `UPDATE Titan.checkTime SET `;
-        cancelSql += `start = CONCAT('${workTime} ', (SELECT startTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId}))),`;
-        cancelSql += `end = CONCAT('${workTime} ', (SELECT endTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId})))`;
+        cancelSql = `UPDATE checkTime SET `;
+        cancelSql += `start = CONCAT('${workTime} ', (SELECT startTime FROM workTime WHERE depId = ( SELECT depId FROM user WHERE id = ${userId}))),`;
+        cancelSql += `end = CONCAT('${workTime} ', (SELECT endTime FROM workTime WHERE depId = ( SELECT depId FROM user WHERE id = ${userId})))`;
         cancelSql += `WHERE userId = ${userId} AND start Like '${workTime}%'`;
       } else {
-        cancelSql = `INSERT INTO Titan.checkTime (userId, start, end) VALUES (`;
-        cancelSql += `${userId}, CONCAT('${workTime} ', (SELECT startTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId}))),`;
-        cancelSql += `CONCAT('${workTime} ', (SELECT endTime FROM Titan.workTime WHERE depId = ( SELECT depId FROM Titan.user WHERE id = ${userId}))))`;
+        cancelSql = `INSERT INTO checkTime (userId, start, end) VALUES (`;
+        cancelSql += `${userId}, CONCAT('${workTime} ', (SELECT startTime FROM workTime WHERE depId = ( SELECT depId FROM user WHERE id = ${userId}))),`;
+        cancelSql += `CONCAT('${workTime} ', (SELECT endTime FROM workTime WHERE depId = ( SELECT depId FROM user WHERE id = ${userId}))))`;
       }
       const result = (await promisePool.query(cancelSql))[0];
       if (result.affectedRows === 1) {

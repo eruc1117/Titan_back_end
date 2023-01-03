@@ -11,7 +11,7 @@ class CheckIn {
   async getLocationInfo() {
     try {
       const promisePool = pool.promise();
-      let sqlCmd = `SELECT latitude, longitude FROM Titan.location `;
+      let sqlCmd = `SELECT latitude, longitude FROM location `;
       sqlCmd += `WHERE depId = ${this.id}`;
       const result = await promisePool.query(sqlCmd);
       if (0 === result[0].length) {
