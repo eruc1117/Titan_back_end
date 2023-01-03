@@ -5,7 +5,7 @@
   "scripts": {
     "start":"node app.js",
     "sqlTable": "node config/mySql/tables/department.js && node config/mySql/tables/holiday.js && node config/mySql/tables/location.js && node config/mySql/tables/user.js && node config/mySql/tables/checkTime.js && node config/mySql/tables/verification.js && node config/mySql/tables/workTime.js",
-    "seedData": "node config/mySql/seed/department.js && node config/mySql/seed/location.js && node config/mySql/seed/user.js && node config/mySql/seed/workTime.js"
+    "seedData": "node config/mySql/seed/department.js && node config/mySql/seed/location.js && node config/mySql/seed/user.js && node config/mySql/seed/workTime.js  && node config/mySql/seed//holiday/importCSV.js"
   },
   "keywords": [],
   "author": "",
