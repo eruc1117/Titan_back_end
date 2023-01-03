@@ -1,6 +1,7 @@
 const pool = require("../config/mySql/connect");
 const haversine = require("haversine-distance");
 const workTimeRange = require("../function/workTimeRange");
+const moment = require("moment-timezone");
 
 class CheckIn {
   constructor(depId) {
