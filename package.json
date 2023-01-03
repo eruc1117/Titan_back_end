@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "main": "importCSV.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start":"node app.js",
+    "sqlTable": "node config/mySql/tables/department.js && node config/mySql/tables/holiday.js"
   },
   "keywords": [],
   "author": "",

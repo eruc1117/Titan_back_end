@@ -8,7 +8,7 @@ async function initDepartment() {
     let tableSql = "CREATE TABLE IF NOT EXISTS department (";
     tableSql += "id int NOT NULL AUTO_INCREMENT PRIMARY KEY,";
     tableSql += "name NVARCHAR(100),";
-    tableSql += "rangeMin INT";
+    tableSql += "rangeMin INT)";
     const [rows, fields] = await promisePool.query(tableSql);
   } catch (err) {
     console.log(err);
