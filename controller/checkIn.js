@@ -63,8 +63,7 @@ const checkInController = {
         return 0;
       }
       const employee = new User(userId);
-      const preCheckLog = await employee.userGpsPunch(nowDateStart, nowDateEnd);
-      const checkLog = preCheckLog[0][0][0];
+      const checkLog = await employee.userGpsPunch(nowDateStart, nowDateEnd);
       let returnInfo = {
         userId: checkLog["userId"],
       };
