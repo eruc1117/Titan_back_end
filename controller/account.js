@@ -73,14 +73,14 @@ const accountController = {
         host: "smtp.gmail.com",
         port: 465,
         auth: {
-          user: "eruc11111@gmail.com",
+          user: process.env.googleEmail,
           pass: process.env.googleSecret,
         },
       });
 
       transporter
         .sendMail({
-          from: "eruc11111@gmail.com",
+          from: process.env.googleEmail,
           to: employeeEmail,
           subject: "密碼重置驗證碼",
           html: `${verId},${verification}`,
