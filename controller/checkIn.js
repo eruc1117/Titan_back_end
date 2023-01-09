@@ -5,14 +5,21 @@ const haversine = require("haversine-distance");
 const workTimeRange = require("../function/workTimeRange");
 
 const checkInController = {
-  checkIn: async (req, res) => {
-    const userId = req.middlewarePassData.userId;
-    const location = req.body.location;
-    const empoloyee = new User(userId);
-    const info = await empoloyee.userGpsPunch(location);
-    res.status(200).json(info);
+  checkIn: async (req, res, next) => {
+    try {
+      const userId = req.middlewarePassData.userId;
+      const location = req.body.location;
+      const empoloyee = new User(userId);
+      const info = await empoloyee.userGpsPunch(location);
+      if (info["status"] === 400) {
+        throw new Error(info["message"]);
+      }
+      res.status(200).json(info);
+    } catch (err) {
+      next(err);
+    }
   },
-  preQrcode: async (req, res) => {
+  preQrcode: async (req, res, next) => {
     try {
       const userId = req.middlewarePassData.userId;
       const location = req.body.location;
@@ -41,10 +48,10 @@ const checkInController = {
         message: verCode,
       });
     } catch (err) {
-      console.log(err);
+      next(err);
     }
   },
-  qrCodeCheckIn: async (req, res) => {
+  qrCodeCheckIn: async (req, res, next) => {
     try {
       const urlVerCode = req.params.urlVerCode;
       const userId = Number(req.params.userId);
@@ -75,7 +82,7 @@ const checkInController = {
         .format("YYYY-MM-DD HH:mm:ss");
       res.status(200).json(returnInfo);
     } catch (err) {
-      console.log(err);
+      next(err);
     }
   },
 };

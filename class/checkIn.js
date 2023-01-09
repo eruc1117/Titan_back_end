@@ -34,7 +34,6 @@ class CheckIn {
       }
 
       const { nowDateStart, nowDateEnd } = workTimeRange();
-
       const promisePool = pool.promise();
       let sqlCmd = `call insertCheckTime(?, ? ,?)`;
       const result = await promisePool.query(sqlCmd, [
