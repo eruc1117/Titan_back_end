@@ -53,7 +53,28 @@
 7. 在專案Terminal上建立種子資料 <br />
 ```npm run seedData```
 
-8. 伺服器運行  <br />
+8. 在使用的 Database 建立 procedure
+
+```DELIMITER //
+CREATE PROCEDURE insertCheckTime(IN id INT, IN startTime datetime, IN endTime datetime)
+BEGIN
+  DECLARE idExist INT DEFAULT 0;
+  SET idExist = (SELECT COUNT(id) FROM checkTime WHERE userId = id AND start > UNIX_TIMESTAMP(startTime) AND start < UNIX_TIMESTAMP(endTime));
+  IF (idExist > 0)
+  THEN
+  BEGIN 
+	UPDATE checkTime SET end = UNIX_TIMESTAMP(NOW()) WHERE userId = id AND start > UNIX_TIMESTAMP(startTime) AND start < UNIX_TIMESTAMP(endTime);
+  END;
+  ELSE
+  BEGIN
+	INSERT INTO checkTime (userId, start) VALUES (id, UNIX_TIMESTAMP(NOW()));
+  END;
+  END IF;
+  SELECT userId, CONVERT_TZ(FROM_UNIXTIME(start), 'SYSTEM', '+8:00') AS start, CONVERT_TZ(FROM_UNIXTIME(end), 'SYSTEM', '+8:00') AS end FROM checkTime WHERE userId = id AND start > UNIX_TIMESTAMP(startTime) AND start < UNIX_TIMESTAMP(endTime);
+END//
+DELIMITER ;```
+
+9. 伺服器運行  <br />
 ```npm run start```
 
 這個專案是前後端分離之專案。 <br />
