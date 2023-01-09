@@ -55,7 +55,8 @@
 
 8. 在使用的 Database 建立 procedure
 
-```DELIMITER //
+```
+DELIMITER //
 CREATE PROCEDURE insertCheckTime(IN id INT, IN startTime datetime, IN endTime datetime)
 BEGIN
   DECLARE idExist INT DEFAULT 0;
@@ -72,16 +73,17 @@ BEGIN
   END IF;
   SELECT userId, CONVERT_TZ(FROM_UNIXTIME(start), 'SYSTEM', '+8:00') AS start, CONVERT_TZ(FROM_UNIXTIME(end), 'SYSTEM', '+8:00') AS end FROM checkTime WHERE userId = id AND start > UNIX_TIMESTAMP(startTime) AND start < UNIX_TIMESTAMP(endTime);
 END//
-DELIMITER ;```
+DELIMITER ;
+```
 
 9. 伺服器運行  <br />
 ```npm run start```
 
 這個專案是前後端分離之專案。 <br />
-前端 [Github 連結](https://github.com/eruc1117/Titan_front_end)  <br />
+前端 [Github 連結](https://github.com/eruc1117/Titan_front_end) 
 
 ### 測試用帳號
 
 #### 前台帳號
-帳號: user0  <br />
+帳號: user0
 密碼: titaner
